@@ -4,5 +4,8 @@ services:
       context: ./app
     ports:
       - "7088:8000"
-    env_file: .env
+    environment: 
+      - LDAP_USER=${LDAP_USER}
+      - LDAP_PASSWORD=${LDAP_PASSWORD}
+      - LDAP_SERVER=${LDAP_SERVER}
 
