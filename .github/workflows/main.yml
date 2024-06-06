@@ -13,11 +13,12 @@ jobs:
       - name: "☁️ checkout repository"
         uses: actions/checkout@v4
           
-      - name: "📦 build images"
+      - name: "📦 build app"
         env:
           LDAP_USER: ${{ secrets.LDAP_USER }}
           LDAP_PASSWORD: ${{ secrets.LDAP_PASSWORD }}
           LDAP_SERVER: ${{ secrets.LDAP_SERVER }}
-        uses: actions/github-script@v7
-        with:
-          exec: "docker compose up -d --build"
+        run: "docker compose build"
+          
+      - name: "📦 run app"
+        run: "docker compose up -d"
