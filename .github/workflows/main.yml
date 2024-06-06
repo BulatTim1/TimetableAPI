@@ -7,31 +7,14 @@ on:
 
 jobs:
   docker:
-    name: Build container
+    name: Build and run compose
     runs-on: self-hosted
     steps:
       - name: "☁️ checkout repository"
         uses: actions/checkout@v2
 
       - name: "📦 build images"
-        uses: actions/github-script@v7
-        with:
-          script: docker compose build
-
-  release:
-    needs:
-      - docker
-    runs-on: self-hosted
-    steps:
-      - name: "☁️ checkout repository"
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: "📦 build images"
-        uses: actions/github-script@v7
-        with:
-          script: docker compose up -d
+        uses: hoverkraft-tech/compose-action@v2.0.0
 
   # cleanup:
   #   name: Cleanup actions
