@@ -12,8 +12,12 @@ jobs:
     steps:
       - name: "☁️ checkout repository"
         uses: actions/checkout@v2
-
+          
       - name: "📦 build images"
+        env:
+          LDAP_USER: ${{ secrets.LDAP_USER }}
+          LDAP_PASSWORD: ${{ secrets.LDAP_PASSWORD }}
+          LDAP_SERVER: ${{ secrets.LDAP_SERVER }}
         uses: hoverkraft-tech/compose-action@v2.0.0
 
   # cleanup:
