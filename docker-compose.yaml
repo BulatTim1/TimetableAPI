@@ -1,0 +1,8 @@
+services:
+  backend:
+    build:
+      context: ./app
+    ports:
+      - "7088:8000"
+    env_file: .env
+
