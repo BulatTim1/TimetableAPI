@@ -12,12 +12,17 @@ jobs:
     steps:
       - name: "☁️ checkout repository"
         uses: actions/checkout@v4
-          
+
+      - name: make envfile
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_LDAP_USER: ${{ secrets.LDAP_USER }}
+          envkey_LDAP_PASSWORD: ${{ secrets.LDAP_PASSWORD }}
+          envkey_LDAP_SERVER: ${{ secrets.LDAP_SERVER }}
+          file_name: .env
+          fail_on_empty: true
+      
       - name: "📦 build app"
-        env:
-          LDAP_USER: ${{ secrets.LDAP_USER }}
-          LDAP_PASSWORD: ${{ secrets.LDAP_PASSWORD }}
-          LDAP_SERVER: ${{ secrets.LDAP_SERVER }}
         run: "docker compose build"
           
       - name: "📦 run app"
