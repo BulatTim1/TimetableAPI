@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
+import os
+import hashlib
 from fastapi import FastAPI, HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from ldap3 import Server, Connection, ALL,  ALL_ATTRIBUTES
 from pydantic import BaseModel
-import os
 import jwt
 from jwt.exceptions import InvalidTokenError
 
@@ -15,7 +16,7 @@ SERVER = os.environ.get('LDAP_SERVER', '')
 dn = SERVER.split('.')
 entrydn = ','.join(f'dc={i}' for i in dn)
 
-SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(24))
+SECRET_KEY = os.environ.get('SECRET_KEY', hashlib.sha512(os.urandom(256)).hexdigest())
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 30 # 30 days
 
@@ -70,7 +71,8 @@ def get_ldap_user(username: str) -> User:
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
-    """Create jwt token with data and expires_delta. If expires_delta is None, token will expire in 15 minutes."""
+    """Create jwt token with data and expires_delta. 
+    If expires_delta is None, token will expire in 15 minutes."""
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
