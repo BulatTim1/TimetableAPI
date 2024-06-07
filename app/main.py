@@ -32,11 +32,18 @@ app = FastAPI()
 server = Server(LDAP_SERVER, get_info=ALL)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-auth = httpx.BasicAuthentication(username=WSDL_USER, password=WSDL_PASSWORD)
-httpx_client = httpx.AsyncClient(auth=auth)
-wsdl_client = AsyncClient(WSDL_LINK,
-    transport=AsyncTransport(client=httpx_client, cache=SqliteCache())
-)
+basic_auth = (WSDL_USER, WSDL_PASSWORD)
+httpx_client = httpx.AsyncClient(auth=basic_auth)
+f = True
+# TODO: more beautiful solution
+while f:
+    try:
+        wsdl_client = AsyncClient(WSDL_LINK,
+            transport=AsyncTransport(client=httpx_client, cache=SqliteCache())
+        )
+        f = False
+    except httpx.TransportError:
+        print("Can't connect to 1c")
 
 # functions
 def authenticate_ldap(username: str, password: str) -> bool:
