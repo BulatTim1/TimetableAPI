@@ -1,2 +1,3 @@
 fastapi
 ldap3
+pyjwt
