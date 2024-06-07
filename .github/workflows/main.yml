@@ -25,6 +25,9 @@ jobs:
           envkey_LDAP_PASSWORD: ${{ secrets.LDAP_PASSWORD }}
           envkey_LDAP_SERVER: ${{ secrets.LDAP_SERVER }}
           envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          envkey_WSDL_USER: ${{ secrets.WSDL_USER }}
+          envkey_WSDL_PASSWORD: ${{ secrets.WSDL_PASSWORD }}
+          envkey_WSDL_LINK: ${{ secrets.WSDL_LINK }}
           file_name: .env
           fail_on_empty: true
       
