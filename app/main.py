@@ -7,7 +7,6 @@ from pydantic import BaseModel
 import os
 import jwt
 from jwt.exceptions import InvalidTokenError
-# from passlib.context import CryptContext
 
 USER = os.environ.get('LDAP_USER', '')
 PASSWORD = os.environ.get('LDAP_PASSWORD', '')
@@ -62,15 +61,16 @@ def get_ldap_user(username: str) -> User:
     conn.unbind()
     if len(res) == 0 or 'studbak' in res[0].entry_dn:
         return [False, [], ""]
-    user = User(username=username, fullname = res[0]['cn'])
+    user = User(username=username, fullname = str(res[0]['cn']))
     if 'memberOf' in res[0]:
         user.roles = res[0]['memberOf']
     if 'department' in res[0]:
         user.group = res[0]['department']
     return user
 
- 
+
 def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
+    """Create jwt token with data and expires_delta. If expires_delta is None, token will expire in 15 minutes."""
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
@@ -82,6 +82,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    """Get current user from jwt token."""
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -103,6 +104,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
 async def get_current_active_user(
     current_user: Annotated[User, Depends(get_current_user)],
 ):
+    """Check if user is active. If not, raise HTTPException."""
     if not current_user:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
@@ -111,6 +113,7 @@ async def get_current_active_user(
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ) -> Token:
+    """Get access token for user. If user not exist, raise HTTPException."""
     user_exist = authenticate_ldap(form_data.username, form_data.password)
     if not user_exist:
         raise HTTPException(
@@ -126,4 +129,5 @@ async def login_for_access_token(
 
 @app.get("/me")
 async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)]):
+    """Get current user."""
     return current_user
