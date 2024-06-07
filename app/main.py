@@ -63,9 +63,9 @@ def get_ldap_user(username: str) -> User:
         return [False, [], ""]
     user = User(username=username, fullname = str(res[0]['cn']))
     if 'memberOf' in res[0]:
-        user.roles = res[0]['memberOf']
+        user.roles = list(res[0]['memberOf'])
     if 'department' in res[0]:
-        user.group = res[0]['department']
+        user.group = str(res[0]['department'])
     return user
 
 
