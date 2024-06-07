@@ -32,7 +32,8 @@ app = FastAPI()
 server = Server(LDAP_SERVER, get_info=ALL)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-httpx_client = httpx.AsyncClient(auth=(WSDL_USER, WSDL_PASSWORD))
+auth = httpx.BasicAuthentication(username=WSDL_USER, password=WSDL_PASSWORD)
+httpx_client = httpx.AsyncClient(auth=auth)
 wsdl_client = AsyncClient(WSDL_LINK,
     transport=AsyncTransport(client=httpx_client, cache=SqliteCache())
 )
