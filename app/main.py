@@ -16,8 +16,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from ldap3 import Server, Connection, ALL,  ALL_ATTRIBUTES
 import jwt
 from jwt.exceptions import InvalidTokenError
-import firebase_admin
-from firebase_admin import auth, firestore, messaging
+from firebase_admin import initialize_app, auth, firestore, messaging
 
 dn = LDAP_SERVER.split('.')
 entrydn = ','.join(f'dc={i}' for i in dn)
@@ -35,10 +34,12 @@ basic_auth = (WSDL_USER, WSDL_PASSWORD)
 httpx_client = httpx.AsyncClient(auth=basic_auth)
 wsdl_client = None
 
+# firebase init
+initialize_app()
+
 # on first load
 @asynccontextmanager
 async def lifespan(fastapi_app: FastAPI):
-    firebase_admin.initialize_app()
     try:
         wsdl_client = AsyncClient(WSDL_LINK,
             transport=AsyncTransport(client=httpx_client, cache=SqliteCache())
