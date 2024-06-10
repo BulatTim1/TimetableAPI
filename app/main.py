@@ -104,7 +104,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         token_data = TokenData(username=username)
     except InvalidTokenError:
         raise credentials_exception
-    user = get_ldap_user(username=token_data.username)
+    user = await get_ldap_user(username=token_data.username)
     if user is None:
         raise credentials_exception
     fb_user = auth.get_user_by_email(f"{user.username}@{LDAP_SERVER}")
