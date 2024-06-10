@@ -1,3 +1,4 @@
+from enum import Enum
 from pydantic import BaseModel
 
 # class ChangePasswordRequest(BaseModel):
@@ -5,7 +6,7 @@ from pydantic import BaseModel
 #     password: str
 
 class Token(BaseModel):
-    access_token: str
+    access_token: str | bytes
     token_type: str
 
 class TokenData(BaseModel):
@@ -16,3 +17,24 @@ class User(BaseModel):
     username: str | None = None
     group: str | None = None
     roles: list[str] = []
+
+class Notification(BaseModel):
+    message: str
+    title: str
+    topics: list[str] = []
+    ids: list[str] = []
+
+class TimetableEnum(str, Enum):
+    groups = "groups"
+    teachers = "teachers"
+
+class DayOfWeekEnum(str, Enum):
+    monday = "monday"
+    tuesday = "tuesday"
+    wednesday = "wednesday"
+    thursday = "thursday"
+    friday = "friday"
+    saturday = "saturday"
+    sunday = "sunday"
+    holidays = "holidays"
+

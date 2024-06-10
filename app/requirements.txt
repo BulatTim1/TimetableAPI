@@ -2,3 +2,4 @@ fastapi
 ldap3
 pyjwt
 zeep
+firebase_admin

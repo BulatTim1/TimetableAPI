@@ -28,6 +28,7 @@ jobs:
           envkey_WSDL_USER: ${{ secrets.WSDL_USER }}
           envkey_WSDL_PASSWORD: ${{ secrets.WSDL_PASSWORD }}
           envkey_WSDL_LINK: ${{ secrets.WSDL_LINK }}
+          envkey_FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
           file_name: .env
           fail_on_empty: true
       
