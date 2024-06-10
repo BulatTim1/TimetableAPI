@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
+import json
 import logging
 from typing import Annotated
 import os
@@ -16,7 +17,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from ldap3 import Server, Connection, ALL,  ALL_ATTRIBUTES
 import jwt
 from jwt.exceptions import InvalidTokenError
-from firebase_admin import initialize_app, auth, firestore, messaging
+from firebase_admin import initialize_app, credentials, auth, firestore, messaging
 
 dn = LDAP_SERVER.split('.')
 entrydn = ','.join(f'dc={i}' for i in dn)
@@ -106,7 +107,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     if user is None:
         raise credentials_exception
     # test firebase
-    initialize_app()
+    initialize_app(credentials.Certificate(json.loads(FIREBASE_JSON)))
     fb_user = auth.get_user_by_email(f"{user.username}@{LDAP_SERVER}")
     if not fb_user:
         fb_user = auth.create_user(email=f"{user.username}@{LDAP_SERVER}")
