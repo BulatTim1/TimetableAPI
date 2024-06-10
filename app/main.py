@@ -107,7 +107,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     if user is None:
         raise credentials_exception
     # test firebase
-    initialize_app(credentials.Certificate(json.loads(FIREBASE_JSON)))
+    initialize_app(credentials.Certificate(json.loads(FIREBASE_CONFIG)))
     fb_user = auth.get_user_by_email(f"{user.username}@{LDAP_SERVER}")
     if not fb_user:
         fb_user = auth.create_user(email=f"{user.username}@{LDAP_SERVER}")

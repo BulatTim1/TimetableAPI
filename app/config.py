@@ -8,4 +8,4 @@ WSDL_USER = os.environ.get('WSDL_USER', '')
 WSDL_PASSWORD = os.environ.get('WSDL_PASSWORD', '')
 WSDL_LINK = os.environ.get('WSDL_LINK', '')
 
-FIREBASE_JSON = os.environ.get('FIREBASE_JSON', '')
+FIREBASE_CONFIG = os.environ.get('FIREBASE_CONFIG', '')
