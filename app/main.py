@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', hashlib.sha512(os.urandom(256)).hexdig
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 30 # 30 days
 
-app = FastAPI()
+app = FastAPI(servers=[{"url": "http://178.205.174.82:7088/"}])
 server = Server(LDAP_SERVER, get_info=ALL)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 logger = logging.getLogger("uvicorn")
