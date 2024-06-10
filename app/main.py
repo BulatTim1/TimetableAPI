@@ -31,7 +31,6 @@ server = Server(LDAP_SERVER, get_info=ALL)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 logger = logging.getLogger("uvicorn")
 
-# TODO: fix 1c web service
 basic_auth = (WSDL_USER, WSDL_PASSWORD)
 httpx_client = httpx.AsyncClient(auth=basic_auth)
 wsdl_client = None
@@ -165,7 +164,7 @@ async def login_for_access_token_firebase(
 @app.post("/send-notification")
 async def send_notification(notification: Notification, 
                             current_user: Annotated[User, Depends(get_current_active_user)]
-                            ) -> messaging.BatchResponse:
+                            ) -> list[dict]:
     """Send notifications to firebase topics or devices."""
     response = messaging.send_each([
         messaging.Message(
@@ -180,7 +179,9 @@ async def send_notification(notification: Notification,
             token=token
         ) for token in notification.ids
     ])
-    return response
+    return [{'success_count': r.success_count,
+             'failure_count': r.failure_count} 
+             for r in response]
 
 # user functions
 def getRole(uid: str) -> str | None:
