@@ -34,9 +34,6 @@ basic_auth = (WSDL_USER, WSDL_PASSWORD)
 httpx_client = httpx.AsyncClient(auth=basic_auth)
 wsdl_client = None
 
-# firebase init
-initialize_app()
-
 # on first load
 @asynccontextmanager
 async def lifespan(fastapi_app: FastAPI):
@@ -108,6 +105,8 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     user = await get_ldap_user(username=token_data.username)
     if user is None:
         raise credentials_exception
+    # test firebase
+    initialize_app()
     fb_user = auth.get_user_by_email(f"{user.username}@{LDAP_SERVER}")
     if not fb_user:
         fb_user = auth.create_user(email=f"{user.username}@{LDAP_SERVER}")
@@ -153,6 +152,10 @@ async def login_for_access_token_firebase(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    try:
+        initialize_app()
+    except ValueError:
+        pass
     user = auth.get_user_by_email(f"{form_data.username}@{LDAP_SERVER}")
     if not user:
         user = auth.create_user(email=f"{form_data.username}@{LDAP_SERVER}", 
